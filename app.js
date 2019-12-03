@@ -1,28 +1,18 @@
-const express = require('express');
-const bodyParser = require('body-parser');
-const logger = require('morgan');
+const MongoClient = require('mongodb').MongoClient;
 
-const api = require('./routes');
-const app = express();
+// Connection URL
+const url = 'mongodb://localhost:27017';
 
+// Database Name
+const dbName = 'trainincenter';
 
-const mongoose = require('mongoose');
-const dev_db_url = 'mongodb://localhost/tc-mongo-homework';
-const mongoDB = process.env.MONGODB_URI || dev_db_url;
+// Use connect method to connect to the server
+MongoClient.connect(url, { useUnifiedTopology: true}, async function(err, client) {
+    const db = client.db(dbName);
+    const users = db.collection('users');
+    const articles = db.collection('articles');
 
-mongoose.connect(mongoDB);
-mongoose.Promise = global.Promise;
+    console.log('works :)');
 
-const db = mongoose.connection;
-db.on('error', console.error.bind(console, 'MongoDB connection error:'));
-
-app.use(logger('dev'));
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({extended: false}));
-app.use('/api', api);
-
-const port = 4040;
-
-app.listen(port, () => {
-    console.log('Server is up and running on port numner ' + port);
+    client.close();
 });

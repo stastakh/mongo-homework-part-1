@@ -1,20 +1,22 @@
 {
-  "name": "tc-mongo-homework",
+  "name": "mongo-homework-part1",
   "version": "1.0.0",
-  "description": "",
+  "description": "### Installation 1. Clone repo 2. Open project directory 3. run ```npm install``` command 3. run ```npm start``` command",
   "main": "index.js",
   "scripts": {
-    "start": "nodemon app.js"
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/vdanyliv/mongo-homework-part-1.git"
   },
   "author": "",
   "license": "ISC",
-  "dependencies": {
-    "body-parser": "^1.18.2",
-    "express": "^4.16.3",
-    "mongoose": "^5.0.11",
-    "morgan": "^1.9.1"
+  "bugs": {
+    "url": "https://github.com/vdanyliv/mongo-homework-part-1/issues"
   },
-  "devDependencies": {
-    "nodemon": "^1.19.1"
+  "homepage": "https://github.com/vdanyliv/mongo-homework-part-1#readme",
+  "dependencies": {
+    "mongodb": "^3.3.5"
   }
 }
