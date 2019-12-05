@@ -63,5 +63,22 @@ MongoClient.connect(url, { useUnifiedTopology: true }, async function(
 
   printData(bestQuizBestExam);
 
+  // Calculate the average score for homework
+  // for all students
+  const averageHomeworkScore = await students
+    .aggregate([
+      { $unwind: '$scores' },
+      { $match: { 'scores.type': 'homework' } },
+      {
+        $group: {
+          _id: 'averageHomeworkScore',
+          avgHWScore: { $avg: '$scores.score' }
+        }
+      }
+    ])
+    .next();
+
+  console.log(averageHomeworkScore);
+
   client.close();
 });
