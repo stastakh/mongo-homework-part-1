@@ -50,5 +50,18 @@ MongoClient.connect(url, { useUnifiedTopology: true }, async function(
 
   printData(bestQuizWorstExam);
 
+  // Find all students who have best score
+  // for quiz and exam
+  const bestQuizBestExam = await students
+    .find({
+      $and: [
+        { 'scores.1.type': 'quiz', 'scores.1.score': { $gt: ratingScore } },
+        { 'scores.0.type': 'exam', 'scores.0.score': { $gt: ratingScore } }
+      ]
+    })
+    .toArray();
+
+  printData(bestQuizBestExam);
+
   client.close();
 });
