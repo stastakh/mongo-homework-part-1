@@ -29,12 +29,26 @@ MongoClient.connect(url, { useUnifiedTopology: true }, async function(
   const worstHomeworkScores = await students
     .find({
       'scores.2.type': 'homework',
-      'scores.2.score': { $lt: 50 }
+      'scores.2.score': { $lt: ratingScore }
     })
     .sort({ 'scores.2.score': -1 })
     .toArray();
 
   printData(worstHomeworkScores);
+
+  // Find all students who have the best score
+  // for quiz and the worst for homework, sort by ascending
+  const bestQuizWorstExam = await students
+    .find({
+      $and: [
+        { 'scores.1.type': 'quiz', 'scores.1.score': { $gt: ratingScore } },
+        { 'scores.2.type': 'homework', 'scores.2.score': { $lt: ratingScore } }
+      ]
+    })
+    .sort({ 'scores.1.score': 1 })
+    .toArray();
+
+  printData(bestQuizWorstExam);
 
   client.close();
 });
