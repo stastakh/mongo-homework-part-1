@@ -86,5 +86,14 @@ MongoClient.connect(url, { useUnifiedTopology: true }, async function(
     'scores.2.score': { $lte: 60 }
   });
 
+  // Mark students that have quiz score => 80
+  students.updateMany(
+    {
+      'scores.1.type': 'quiz',
+      'scores.1.score': { $gte: 80 }
+    },
+    { $set: { greatQuizScore: true } }
+  );
+
   client.close();
 });
