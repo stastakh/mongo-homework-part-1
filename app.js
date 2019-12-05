@@ -80,5 +80,11 @@ MongoClient.connect(url, { useUnifiedTopology: true }, async function(
 
   console.log(averageHomeworkScore);
 
+  // Delete all students that have homework score <= 60
+  students.deleteMany({
+    'scores.2.type': 'homework',
+    'scores.2.score': { $lte: 60 }
+  });
+
   client.close();
 });
