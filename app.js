@@ -95,5 +95,79 @@ MongoClient.connect(url, { useUnifiedTopology: true }, async function(
     { $set: { greatQuizScore: true } }
   );
 
+  // Write a query that group students by 3 categories
+  // (calculate the average grade for three subjects)
+  // - a => (between 0 and 40)
+  // - b => (between 40 and 60)
+  // - c => (between 60 and 100)
+  const categories = await students
+    .aggregate([
+      {
+        $project: {
+          _id: '$_id',
+          name: '$name',
+          averageScore: {
+            $reduce: {
+              input: '$scores',
+              initialValue: 0,
+              in: { $avg: ['$$value', '$$this.score'] }
+            }
+          }
+        }
+      },
+      {
+        $group: {
+          _id: 'data',
+          students: {
+            $push: { _id: '$_id', name: '$name', averageScore: '$averageScore' }
+          }
+        }
+      },
+      {
+        $project: {
+          _id: 'categories',
+          categoryA: {
+            $filter: {
+              input: '$students',
+              as: 'students',
+              cond: {
+                $and: [
+                  { $gte: ['$$students.averageScore', 0] },
+                  { $lte: ['$$students.averageScore', 40] }
+                ]
+              }
+            }
+          },
+          categoryB: {
+            $filter: {
+              input: '$students',
+              as: 'students',
+              cond: {
+                $and: [
+                  { $gt: ['$$students.averageScore', 40] },
+                  { $lte: ['$$students.averageScore', 60] }
+                ]
+              }
+            }
+          },
+          categoryC: {
+            $filter: {
+              input: '$students',
+              as: 'students',
+              cond: {
+                $and: [
+                  { $gt: ['$$students.averageScore', 60] },
+                  { $lte: ['$$students.averageScore', 100] }
+                ]
+              }
+            }
+          }
+        }
+      }
+    ])
+    .next();
+
+  console.log(categories);
+
   client.close();
 });
